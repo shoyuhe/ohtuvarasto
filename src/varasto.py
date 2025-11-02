@@ -13,7 +13,6 @@ class Varasto:
 
     def ota_varastosta(self, maara):
         self.saldo = self.saldo - maara
-
         return maara
 
     # def __str__(self):
