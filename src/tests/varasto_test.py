@@ -30,7 +30,6 @@ class TestVarasto(unittest.TestCase):
         # vapaata tilaa pitäisi vielä olla tilavuus-lisättävä määrä eli 2
         self.assertAlmostEqual(self.varasto.paljonko_mahtuu(), 2)
 
-    #awwwwwwwwwrererererererrerererrererererrerererererrerererrerererererrererererrerererrererererrerererererererere
     def test_ottaminen_palauttaa_oikean_maaran(self):
         """Take from storage"""
         self.varasto.lisaa_varastoon(8)
