@@ -31,6 +31,11 @@
             border: none;
             cursor: pointer;
             margin: 5px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+            text-align: center;
+            min-width: 80px;
         }
         .btn:hover {
             background-color: #45a049;
@@ -84,7 +89,7 @@
                     </div>
                     <a href="{{ url_for('edit_storage', storage_id=id) }}" class="btn btn-edit">Edit</a>
                     <form method="POST" action="{{ url_for('delete_storage', storage_id=id) }}" style="display: inline;">
-                        <button type="submit" class="btn btn-delete" onclick="return confirm('Are you sure?')">Delete</button>
+                        <button type="submit" class="btn btn-delete btn-same-size" onclick="return confirm('Are you sure?')">Delete</button>
                     </form>
                 </div>
                 {% endfor %}

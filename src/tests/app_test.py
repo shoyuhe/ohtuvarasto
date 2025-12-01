@@ -121,3 +121,43 @@ class TestApp(unittest.TestCase):
         """Test deleting non-existent storage"""
         response = self.client.post("/delete/999", follow_redirects=True)
         self.assertEqual(response.status_code, 200)
+
+    def test_add_content_respects_capacity(self):
+        """Test that adding content cannot exceed capacity"""
+        self.client.post("/create", data={
+            "name": "Test Storage",
+            "tilavuus": "100",
+            "alku_saldo": "80"
+        })
+        # Try to add 50 when only 20 space is available
+        self.client.post("/edit/1", data={
+            "action": "add",
+            "amount": "50"
+        })
+        # Should only add 20 (available space), resulting in saldo of 100
+        self.assertEqual(storage_manager.storages[1]["varasto"].saldo, 100)
+
+    def test_remove_content_respects_balance(self):
+        """Test that removing content cannot go below zero"""
+        self.client.post("/create", data={
+            "name": "Test Storage",
+            "tilavuus": "100",
+            "alku_saldo": "30"
+        })
+        # Try to remove 50 when only 30 is available
+        self.client.post("/edit/1", data={
+            "action": "remove",
+            "amount": "50"
+        })
+        # Should only remove 30 (current balance), resulting in saldo of 0
+        self.assertEqual(storage_manager.storages[1]["varasto"].saldo, 0)
+
+    def test_create_storage_initial_balance_respects_capacity(self):
+        """Test that initial balance cannot exceed capacity"""
+        self.client.post("/create", data={
+            "name": "Test Storage",
+            "tilavuus": "100",
+            "alku_saldo": "150"
+        })
+        # Initial balance should be capped at capacity
+        self.assertEqual(storage_manager.storages[1]["varasto"].saldo, 100)

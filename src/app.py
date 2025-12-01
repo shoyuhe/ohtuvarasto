@@ -55,6 +55,8 @@ def create_storage():
             alku_saldo = 0
 
         if tilavuus > 0 and name:
+            # Ensure initial balance doesn't exceed capacity and is not negative
+            alku_saldo = max(0, min(alku_saldo, tilavuus))
             varasto = Varasto(tilavuus, alku_saldo)
             storage_manager.add_storage(name, varasto)
             return redirect(url_for("index"))
@@ -81,7 +83,10 @@ def edit_storage(storage_id):
             try:
                 amount = float(request.form.get("amount", 0))
                 if amount > 0:
-                    storage_data["varasto"].lisaa_varastoon(amount)
+                    available_space = storage_data["varasto"].paljonko_mahtuu()
+                    amount_to_add = min(amount, available_space)
+                    if amount_to_add > 0:
+                        storage_data["varasto"].lisaa_varastoon(amount_to_add)
             except ValueError:
                 pass
 
@@ -89,7 +94,10 @@ def edit_storage(storage_id):
             try:
                 amount = float(request.form.get("amount", 0))
                 if amount > 0:
-                    storage_data["varasto"].ota_varastosta(amount)
+                    current_balance = storage_data["varasto"].saldo
+                    amount_to_remove = min(amount, current_balance)
+                    if amount_to_remove > 0:
+                        storage_data["varasto"].ota_varastosta(amount_to_remove)
             except ValueError:
                 pass
 
